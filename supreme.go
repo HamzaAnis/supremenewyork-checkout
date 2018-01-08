@@ -80,7 +80,7 @@ func main() {
 		Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:57.0) Gecko/20100101 Firefox/57.0").
 		Set("Content-Type", "application/x-www-form-urlencoded").
 		Set("Accept-Encoding", "gzip, deflate, br").
-		Set("Referer", "https://www.supremenewyork.com").
+		Set("Referer", "https://www.supremenewyork.com/checkout").
 		Set("Origin", "https://www.supremenewyork.com").
 		Set("Connection", "keep-alive").
 		Set("Accept", "application/json").
@@ -100,7 +100,7 @@ func main() {
 	// 	fmt.Print(errs)
 	// }
 	// resp.Body.Close()
-	fmt.Print("Status of the item is " + body)
+	fmt.Println("Status of the item is " + body)
 
 	_, body, err := request.Get("http://www.supremenewyork.com/checkout").End()
 
@@ -136,7 +136,8 @@ func main() {
 		Terms:             true,
 		Captcha:           "",
 	}
-	m = map[string]interface{}{
+	fmt.Println("Token is " + token)
+	m1 := map[string]interface{}{
 		"utf8":                     "✓",
 		"authenticity_token":       token,
 		"order[billing_name]":      checkoutinfo.BillingName,
@@ -155,21 +156,24 @@ func main() {
 		"credit_card[month]":       checkoutinfo.Month,
 		"credit_card[year]":        checkoutinfo.Year,
 		"credit_card[vval]":        checkoutinfo.VVal,
-		"order[terms]":             "0",
+		"order[terms]":             "1",
 		"hpcvv":                    "",
 		"cnt":                      "1"}
-
+	// request1 := gorequest.New()
 	_, body1, err1 := request.Get("http://www.supremenewyork.com/checkout.js").
 		Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:57.0) Gecko/20100101 Firefox/57.0").
 		Set("Content-Type", "application/x-www-form-urlencoded").
+		AppendHeader("Content-Type", "charset=utf-8").
 		Set("Accept-Encoding", "gzip").
+		AppendHeader("Accept-Encoding", "deflate").
+		AppendHeader("Accept-Encoding", "br").
 		Set("Referer", "https://www.supremenewyork.com/checkout").
 		Set("Origin", "https://www.supremenewyork.com").
 		Set("Connection", "keep-alive").
 		Set("Accept", "application/json").
 		Set("X-Requested-Width", "XMLHttpRequest").
-		Send(m).
-		AddCookies(cookies).
+		Send(m1).
+		// AddCookies(cookies).
 		End()
 
 	if err1 != nil {
